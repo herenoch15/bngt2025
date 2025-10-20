@@ -1,4 +1,4 @@
-package com.bluethoth
+package com.devgamer24680.BNGT
 
 import android.app.Application
 import com.facebook.react.PackageList
