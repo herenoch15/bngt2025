@@ -1,0 +1,2 @@
+const SET_LANGUAGES = 'SET_LANGUAGES'
+export { SET_LANGUAGES}

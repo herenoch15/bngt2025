@@ -1,105 +1,254 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { 
-  Platform,
-  PermissionsAndroid,
-  DeviceEventEmitter,
-  StatusBar,
-  StyleSheet,
-  useColorScheme,
-  View } from 'react-native';
+import { NavigationContainer, } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
-import Beacons from '@hkpuits/react-native-beacons-manager'
-import { useEffect } from 'react';
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-     const requestLocationPermission = async () => {
-          if (Platform.OS === 'ios') {
-            return true
-          }
-          if (Platform.OS === 'android' && PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION) {
-            const apiLevel = parseInt(Platform.Version.toString(), 10)
-  
-            if (apiLevel < 31) {
-              const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION)
-              return granted === PermissionsAndroid.RESULTS.GRANTED
-            }
-            if (PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN && PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT) {
-              const result = await PermissionsAndroid.requestMultiple([
-                PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
-                PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
-                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-              ])
-  
-              return (
-                result['android.permission.BLUETOOTH_CONNECT'] === PermissionsAndroid.RESULTS.GRANTED &&
-                result['android.permission.BLUETOOTH_SCAN'] === PermissionsAndroid.RESULTS.GRANTED &&
-                result['android.permission.ACCESS_FINE_LOCATION'] === PermissionsAndroid.RESULTS.GRANTED
-              )
-            }
-          }
-         
-                  return true;
-        }
-  const asyncBlueThouth =async () => {
-        console.log("APPPP////////////")
-        await requestLocationPermission()
-          // Tells the library to detect iBeacons
-          Beacons.init(); // to set the NotificationChannel, and enable background scanning
-          Beacons.detectIBeacons();
-          console.log("Start detecting all iBeacons in the nearby")
-          // Start detecting all iBeacons in the nearby
-          try {
-            await Beacons.startRangingBeaconsInRegion('REGION1')
-            console.log(`Beacons ranging started succesfully!`);
-          } catch (error: any) {
-            console.log(`Beacons ranging not started, error: ${error}`);
-          }
+     Platform,
+     View} from 'react-native';
+import { Provider } from 'react-redux';
+import Loading from './components/Loading';
+import Accueil from './screens/accueil/Accueil';
+import Apropos from './screens/apropos/Apropos';
+import Carte from './screens/carte/Carte';
+import CarteRefresher from './screens/carte/CarteRefresher';
+import Recherche from './screens/recherche/Recherche';
+import Scan from './screens/scan/Scan';
+import Start from './screens/start/Start';
+import Update from './screens/start/Update';
+import DetailThematique from './screens/thematique/DetailThematique';
+import Interet from './screens/thematique/Interet';
+import Thematique from './screens/thematique/Thematique';
+import DetailTroncon from './screens/Troncon/DetailTroncon';
+import Troncon from './screens/Troncon/Troncon';
+import DetailUnite from './screens/unite/DetailUnite';
+import Unite from './screens/unite/Unite';
+import store from './store';
 
-          // Print a log of the detected iBeacons (1 per second)
-          DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
-            console.log('Found beacons!', data.beacons);
-          })
-  }
-    useEffect(  () => {
-          asyncBlueThouth()
+const Stack = createStackNavigator()
+export default function App() {
+    const [loading, setLoading] = useState(true);
+    const { Navigator, Screen } = createStackNavigator();
+    useEffect(() => {
+       // timer()
+        setLoading(false);
+      //  loadRessources();
     }, []);
-  
-  
-  return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
-  );
+    return loading ?
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <Loading />
+        </View>
+        : (<Provider store={store}>
+            <NavigationContainer>
+                <Navigator>
+                    <Screen name="Start" component={Start} options={{ headerShown: false }} />
+                    <Screen name="Update" component={Update} options={{ headerShown: true, title: "" }} />
+                    <Screen name="Accueil" component={Accueil} options={{ headerShown: false, }} />
+                    <Screen name="Carte" component={Carte}
+                        options={{
+                            headerTitleAlign: "left",
+                            headerShown: true,
+                            title: "",
+                            headerStatusBarHeight: Platform.select({android:20}),
+                            headerStyle: {
+                                borderBottomWidth: 0,
+                                height: Platform.select({android:60}),
+                                backgroundColor: '#299bc4',
+                            },
+                            headerTintColor: '#fff',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                        }}
+                    />
+                    <Screen name="CarteRefresher" component={CarteRefresher} options={{ headerShown: false }} />
+                    <Screen
+                        name="Troncon"
+                        component={Troncon}
+                        options={{
+                            headerTitleAlign: "left",
+                            headerShown: true,
+                            title: "",
+                            headerStatusBarHeight: Platform.select({android:20}),
+                            headerStyle: {
+                                borderBottomWidth: 0,
+                                height: Platform.select({android:60}),
+                                backgroundColor: '#2ca331',
+                            },
+                            headerTintColor: '#fff',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                        }}
+                    />
+                    <Screen
+                        name="DetailTroncon"
+                        component={DetailTroncon}
+                        options={{
+                            headerTitleAlign: "left",
+                            headerShown: true,
+                            title: "",
+                            headerStatusBarHeight: Platform.select({android:20}),
+                            headerStyle: {
+                                borderBottomWidth: 0,
+                                height: Platform.select({android:60}),
+                                backgroundColor: '#2ca331',
+                            },
+                            headerTintColor: '#fff',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                        }}
+                    />
+                    <Screen
+                        name="Unite"
+                        component={Unite}
+                        options={{
+                            headerTitleAlign: "left",
+                            headerShown: true,
+                            title: "",
+                            headerStatusBarHeight: Platform.select({android:20}),
+                            headerStyle: {
+                                borderBottomWidth: 0,
+                                height: Platform.select({android:60}),
+                                backgroundColor: '#d46e2c',
+                            },
+                            headerTintColor: '#000',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                        }}/>
+                    <Screen
+                        name="DetailUnite"
+                        component={DetailUnite}
+                        options={{
+                            headerTitleAlign: "left",
+                            headerShown: true,
+                            title: "",
+                            headerStatusBarHeight: Platform.select({android:20}),
+                            headerStyle: {
+                                borderBottomWidth: 0,
+                                height: Platform.select({android:60}),
+                                backgroundColor: '#d46e2c',
+                            },
+                            headerTintColor: '#fff',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                        }}/>
+
+                    <Screen
+                        name="Thematique"
+                        component={Thematique}
+                        options={{
+                            headerTitleAlign: "left",
+                            headerShown: true,
+                            title: "",
+                            headerStyle: {
+                                borderBottomWidth: 0,
+                                backgroundColor: '#de382f',
+                            },
+                            headerTintColor: '#fff',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                        }}
+                    />
+                    <Screen
+                        name="DetailThematique"
+                        component={DetailThematique}
+                        options={{
+                            headerTitleAlign: "left",
+                            headerShown: true,
+                            title: "",
+                            headerStatusBarHeight: Platform.select({android:20}),
+                            headerStyle: {
+                                borderBottomWidth: 0,
+                                height: Platform.select({android:60}),
+                                backgroundColor: '#de382f',
+                            },
+                            headerTintColor: '#fff',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                        }}
+                    />
+
+                    <Screen
+                        name="Recherche"
+                        component={Recherche}
+                        options={{
+                            headerTitleAlign: "left",
+                            headerShown: true,
+                            title: "",
+                            headerStatusBarHeight: Platform.select({android:20}),
+                            headerStyle: {
+                                borderBottomWidth: 0,
+                                height: Platform.select({android:60}),
+                                backgroundColor: '#de382f',
+                            },
+                            headerTintColor: '#fff',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                        }}
+                    />
+                    <Screen
+                        name="Interet"
+                        component={Interet}
+                        options={{
+                            headerTitleAlign: "left",
+                            headerShown: true,
+                            title: "",
+                            headerStatusBarHeight: Platform.select({android:20}),
+                            headerStyle: {
+                                borderBottomWidth: 0,
+                                height: Platform.select({android:60}),
+                                backgroundColor: '#de382f',
+                            },
+                            headerTintColor: '#fff',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                        }}
+                    />
+                    <Screen name="Apropos"
+                        component={Apropos}
+                        options={{
+                            headerTitleAlign: "left",
+                            headerShown: true,
+                            title: "",
+                            headerStatusBarHeight: Platform.select({android:20}),
+                            headerStyle: {
+                                borderBottomWidth: 0,
+                                height: Platform.select({android:60}),
+                                backgroundColor: '#209ed5',
+                            },
+                            headerTintColor: '#fff',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                            //unmountOnBlur: true
+                        }}/>
+                    <Screen name="Scan"
+                        component={Scan}
+                        options={{
+                            headerTitleAlign: "left",
+                            headerShown: true,
+                            title: "Scan QR-Code",
+                            headerStatusBarHeight: Platform.select({android:20}),
+                            headerStyle: {
+                                borderBottomWidth: 0,
+                                height: Platform.select({android:60}),
+                                backgroundColor: '#299bc4'
+                            },
+                            headerTintColor: '#fff',
+                            headerTitleStyle: {
+                                fontWeight: 'bold',
+                            },
+                        }}
+                    />
+                </Navigator>
+            </NavigationContainer>
+            </Provider>
+        );
+
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
-
-export default App;

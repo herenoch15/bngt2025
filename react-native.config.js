@@ -5,5 +5,11 @@ module.exports = {
         ios: null, // désactive l’intégration iOS automatique
       },
     },
+         'react-native-vector-icons': {
+          platforms: {
+            ios: null,
+          },
+        },
   },
+//  assets: ['./assets/fonts/']
 };
