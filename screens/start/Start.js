@@ -277,8 +277,13 @@ const Start = (props) => {
 
         // Start detecting all iBeacons in the nearby
        console.log('Start detecting all iBeacons in the nearby')
-       Beacons.init(); // to set the NotificationChannel, and enable background scanning
-       Beacons.detectIBeacons();
+       if(Platform.OS=='android') {
+            Beacons.init(); // to set the NotificationChannel, and enable background scanning
+            Beacons.detectIBeacons();
+       }else {
+        Beacons.requestWhenInUseAuthorization();
+        Beacons.startUpdatingLocation();
+       }
        console.log('AFTER DETECT BT Beacons:::::: ')
         try {
             Beacons.setBackgroundScanPeriod(2000)
@@ -296,7 +301,7 @@ const Start = (props) => {
     await AsyncStorage.setItem("@lang", lang);
     start = JSON.parse(start);
     if (start) {
-        await getBeacons()
+      //  await getBeacons()
        navigation.navigate("Accueil");
 
     } else {
@@ -357,7 +362,7 @@ const Start = (props) => {
                     setLoading(false);
                   //  Beacons.stop()
                   //  Platform.OS=='android'?  DeviceEventEmitter.removeAllListeners('beaconsDidRange') :  Beacons.BeaconsEventEmitter.removeAllListeners('beaconsDidRange')
-                  await getBeacons()
+                //  await getBeacons()
                    navigation.navigate("Accueil");
                   } catch (e) {
                     console.log("async", e);

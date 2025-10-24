@@ -19,7 +19,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-import RNExitApp from 'react-native-exit-app';
+//import RNExitApp from 'react-native-exit-app';
+//import { exitApp } from '@logicwind/react-native-exit-app';
+import AppControl from 'react-native-app-control';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import Beacons from '@hkpuits/react-native-beacons-manager';
 //import Beacons from '@kojongdev/react-native-beacons-manager'
@@ -195,7 +197,7 @@ const Accueil = (props) =>  {
                   lang === 'es' ? 'Sí' :
                   lang === 'cr' ? 'Wi' :
                   'Yes',
-            onPress: () => { RNExitApp.exitApp(); }
+            onPress: () => { AppControl.Exit(); }
           }
         ]
         );
