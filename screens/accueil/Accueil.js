@@ -13,6 +13,7 @@ import {
     PermissionsAndroid,
     DeviceEventEmitter,
 } from 'react-native';
+
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -237,7 +238,6 @@ const Accueil = (props) =>  {
     const getBeacons = async  (beaconsList, lang) => {
                     var incSecondeInit = 0
                     await dispatch({ type: SET_LIST_POI, value: beaconsList })
-                    console.log('DEBUT GET BEACONS::::'+ JSON.stringify(beaconsList)) 
                     DeviceEventEmitter.addListener('beaconsDidRange', async (data) => {
                                 console.log(' ////// DEBUT beacons // '+ JSON.stringify(data)+ 'NBR::'+JSON.stringify(data))
                                 var poiTab = []

@@ -51,8 +51,24 @@ function App() {
                   return true;
         }
   const asyncBlueThouth =async () => {
-        console.log("APPPP////////////")
-        await requestLocationPermission()
+          console.log("APPPP////////////")
+              Beacons.init();
+     Beacons.detectIBeacons();
+
+// Start detecting all iBeacons in the nearby
+try {
+  await Beacons.startRangingBeaconsInRegion('REGION1')
+  console.log(`Beacons ranging started succesfully!`)
+} catch (err) {
+  console.log(`Beacons ranging not started, error: `)
+}
+
+// Print a log of the detected iBeacons (1 per second)
+const subscription = DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
+  console.log('Found beacons!', data.beacons)
+})
+
+       /* await requestLocationPermission()
           // Tells the library to detect iBeacons
           Beacons.init(); // to set the NotificationChannel, and enable background scanning
           Beacons.detectIBeacons();
@@ -68,7 +84,7 @@ function App() {
           // Print a log of the detected iBeacons (1 per second)
           DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
             console.log('Found beacons!', data.beacons);
-          })
+          })*/
   }
     useEffect(  () => {
           asyncBlueThouth()

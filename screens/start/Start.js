@@ -282,14 +282,20 @@ const Start = (props) => {
             Beacons.detectIBeacons();
        }else {
         Beacons.requestWhenInUseAuthorization();
-        Beacons.startUpdatingLocation();
+       
        }
        console.log('AFTER DETECT BT Beacons:::::: ')
         try {
-            Beacons.setBackgroundScanPeriod(2000)
+          if(Platform.OS== 'android') {
+             Beacons.setBackgroundScanPeriod(2000)
             Beacons.setForegroundScanPeriod(2000)
+          }
+           
             Beacons.startRangingBeaconsInRegion('GEGION')
             console.log(`Region Beacons ranging started succesfully!`);
+            if(Platform.OS== 'ios') {
+               Beacons.startUpdatingLocation();
+            }
           } catch (err) {
             console.log(`Beacons ranging not started, error: ${error}`);
           }
@@ -301,7 +307,7 @@ const Start = (props) => {
     await AsyncStorage.setItem("@lang", lang);
     start = JSON.parse(start);
     if (start) {
-      //  await getBeacons()
+        await getBeacons()
        navigation.navigate("Accueil");
 
     } else {
@@ -360,9 +366,9 @@ const Start = (props) => {
                     );
                     //setLang(false)
                     setLoading(false);
-                  //  Beacons.stop()
-                  //  Platform.OS=='android'?  DeviceEventEmitter.removeAllListeners('beaconsDidRange') :  Beacons.BeaconsEventEmitter.removeAllListeners('beaconsDidRange')
-                //  await getBeacons()
+                    Beacons.stop()
+                  Platform.OS=='android'?  DeviceEventEmitter.removeAllListeners('beaconsDidRange') :  Beacons.BeaconsEventEmitter.removeAllListeners('beaconsDidRange')
+                  await getBeacons()
                    navigation.navigate("Accueil");
                   } catch (e) {
                     console.log("async", e);
@@ -422,7 +428,10 @@ const Start = (props) => {
   }
 
   useEffect(() => {
-    enableBluetooth()
+    if(Platform.OS=='android'){
+          enableBluetooth()
+    }
+
     getIsFirstLaunch();
   }, []);
 
@@ -473,7 +482,7 @@ const Start = (props) => {
     };
       const requestLocationPermission = async () => {
           if (Platform.OS === 'ios') {
-            return true
+           // return true
           }
           if (Platform.OS === 'android' && PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION) {
             const apiLevel = parseInt(Platform.Version.toString(), 10)
@@ -503,11 +512,18 @@ const Start = (props) => {
             console.log("APPPP////////////")
             await requestLocationPermission()
             // Tells the library to detect iBeacons
-            Beacons.init(); // to set the NotificationChannel, and enable background scanning
-            Beacons.detectIBeacons();
+            if(Platform.OS=='android'){
+                  Beacons.init(); // to set the NotificationChannel, and enable background scanning
+                  Beacons.detectIBeacons();
+            }else {
+                  Beacons.requestWhenInUseAuthorization();
+            }
             Beacons.setBackgroundScanPeriod(2000)
             Beacons.setForegroundScanPeriod(2000)
             console.log("Start detecting all iBeacons in the nearby")
+            if(Platform.OS== 'ios') {
+              Beacons.startUpdatingLocation()
+            }
             // Start detecting all iBeacons in the nearby
             try {
                 await Beacons.startRangingBeaconsInRegion('REGION1')
